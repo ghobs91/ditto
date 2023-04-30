@@ -116,7 +116,7 @@ async function getAncestors(event: Event<1>, result = [] as Event<1>[]): Promise
 }
 
 function getDescendants(eventId: string): Promise<SignedEvent<1>[]> {
-  return getFilter({ kinds: [1], '#e': [eventId] }) as Promise<SignedEvent<1>[]>;
+  return getFilter({ kinds: [1], '#e': [eventId], limit: 200 }) as Promise<SignedEvent<1>[]>;
 }
 
 export { getAncestors, getAuthor, getDescendants, getEvent, getFeed, getFollows, pool };

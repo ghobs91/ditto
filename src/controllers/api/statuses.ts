@@ -42,14 +42,21 @@ const createStatusController = validator('json', async (value, c: AppContext) =>
   }
 });
 
+// https://stackoverflow.com/a/64820881/8811886
+function wait(ms: number) {
+  return new Promise((_, reject) => {
+    setTimeout(() => reject(new Error('timeout succeeded')), ms);
+  });
+}
+
 const contextController: AppController = async (c) => {
   const id = c.req.param('id');
 
   const event = await getEvent(id, 1);
 
   if (event) {
-    const ancestorEvents = await getAncestors(event);
-    const descendantEvents = await getDescendants(event.id);
+    const ancestorEvents = await Promise.race([wait(1000), getAncestors(event)]) as Event<1>[];
+    const descendantEvents = await Promise.race([wait(1000), getDescendants(event.id)]) as Event<1>[];
 
     return c.json({
       ancestors: (await Promise.all((ancestorEvents).map(toStatus))).filter(Boolean),

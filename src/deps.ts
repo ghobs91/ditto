@@ -32,3 +32,7 @@ import 'npm:linkify-plugin-hashtag@^4.1.0';
 export { default as mime } from 'npm:mime@^3.0.0';
 export { unfurl } from 'npm:unfurl.js@^6.3.1';
 export { default as TTLCache } from 'npm:@isaacs/ttlcache@^1.4.0';
+// @deno-types="npm:@types/react@18.2.6"
+export { default as React } from 'npm:react@^18.2.0';
+// @deno-types="npm:@types/react-dom@18.2.4/server"
+export { renderToString } from 'npm:react-dom@^18.2.0/server';

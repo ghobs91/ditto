@@ -1,5 +1,7 @@
 import { z } from '@/deps.ts';
 import { AppController } from '@/app.ts';
+import OAuthPage from '@/pages/oauth.tsx';
+import { renderPage } from '@/pages/mod.tsx';
 import { parseBody } from '@/utils.ts';
 
 const passwordGrantSchema = z.object({
@@ -48,31 +50,10 @@ const oauthController: AppController = (c) => {
 
   const redirectUri = decodeURIComponent(encodedUri);
 
-  // Poor man's XSS check.
-  // TODO: Render form with JSX.
-  try {
-    new URL(redirectUri);
-  } catch (_e) {
-    return c.text('Invalid `redirect_uri`.', 422);
-  }
-
   c.res.headers.set('content-security-policy', 'default-src \'self\'');
 
   // TODO: Login with `window.nostr` (NIP-07).
-  return c.html(`<!DOCTYPE html>
-  <html>
-    <head>
-      <title>Log in with Ditto</title>
-    </head>
-    <body>
-      <form action="/oauth/authorize" method="post">
-        <input type="text" placeholder="npub1... or nsec1..." name="nostr_id" autocomplete="off">
-        <input type="hidden" name="redirect_uri" id="redirect_uri" value="${redirectUri}" autocomplete="off">
-        <button type="submit">Authorize</button>
-      </form>
-    </body>
-  </html>
-  `);
+  return c.html(renderPage(OAuthPage({ redirectUri })));
 };
 
 const oauthAuthorizeController: AppController = async (c) => {
